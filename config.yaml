@@ -1,0 +1,13 @@
+database:
+  driver: ${PG_DRIVER}
+  host: ${PG_HOST}
+  port: ${PG_PORT}
+  user: ${PG_USER}
+  password: ${PG_PASSWORD}
+  name: ${PG_DB}
+  sslmode: ${PG_SSLMODE}
+
+server:
+  address: "localhost:8080"
+  timeout: 4s
+  idle_timeout: 60s
