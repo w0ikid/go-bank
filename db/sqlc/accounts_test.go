@@ -9,7 +9,28 @@ import (
 	"github.com/w0ikid/go-bank/util"
 )
 
-func randomAccount() CreateAccountParams {
+func createRandomAccount(t *testing.T) Account {
+	arg := CreateAccountParams{
+		Owner:    util.RandomOwner(),
+		Balance:  util.RandomBalance(),
+		Currency: util.RandomCurrency(),
+	}
+
+	account, err := testQueries.CreateAccount(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, account)
+
+	require.Equal(t, arg.Owner, account.Owner)
+	require.Equal(t, arg.Balance, account.Balance)
+	require.Equal(t, arg.Currency, account.Currency)
+
+	require.NotZero(t, account.ID)
+	require.NotZero(t, account.CreatedAt)
+
+	return account
+}
+
+func randomAccountParams() CreateAccountParams {
 	return CreateAccountParams{
 		Owner:    util.RandomOwner(),
 		Balance:  util.RandomBalance(),
@@ -18,10 +39,10 @@ func randomAccount() CreateAccountParams {
 }
 
 func TestCreateAccount(t *testing.T) {
-	arg := randomAccount()
+	arg := randomAccountParams()
 
 	account, err := testQueries.CreateAccount(context.Background(), arg)
-	
+
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
 
@@ -34,7 +55,7 @@ func TestCreateAccount(t *testing.T) {
 }
 
 func TestGetAccount(t *testing.T) {
-	arg := randomAccount()
+	arg := randomAccountParams()
 
 	account1, err := testQueries.CreateAccount(context.Background(), arg)
 	require.NoError(t, err)
@@ -52,7 +73,7 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestUpdateAccount(t *testing.T) {
-	arg := randomAccount()
+	arg := randomAccountParams()
 
 	account1, err := testQueries.CreateAccount(context.Background(), arg)
 	require.NoError(t, err)
@@ -77,7 +98,7 @@ func TestUpdateAccount(t *testing.T) {
 }
 
 func TestDeleteAccount(t *testing.T) {
-	arg := randomAccount()
+	arg := randomAccountParams()
 
 	account1, err := testQueries.CreateAccount(context.Background(), arg)
 	require.NoError(t, err)
@@ -91,4 +112,3 @@ func TestDeleteAccount(t *testing.T) {
 	require.EqualError(t, err, "no rows in result set")
 	require.Empty(t, account2)
 }
-
