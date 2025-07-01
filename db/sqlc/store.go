@@ -93,43 +93,50 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		}
 		
 		// Update account balances
-
-		if arg.FromAccountID < arg.ToAccountID {
-			result.FromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
-			ID:     arg.FromAccountID,
-			Amount: -arg.Amount,
-			})
-			if err != nil {
-				return err
-			}
-			
-			result.ToAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
-				ID:     arg.ToAccountID,
-				Amount: arg.Amount,
-			})
-			if err != nil {
-				return err
-			}
-		} else {
-			result.ToAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
-				ID:     arg.ToAccountID,
-				Amount: arg.Amount,
-			})
-			if err != nil {
-				return err
-			}
-			
-			result.FromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
-				ID:     arg.FromAccountID,
-				Amount: -arg.Amount,
-			})
-			if err != nil {
-				return err
-			}
+		result.FromAccount, result.ToAccount, err = updateBalances(
+			ctx, q, arg.FromAccountID, arg.ToAccountID, arg.Amount,
+		)
+		if err != nil {
+			return err
 		}
 
 		return nil
 	})
 
 	return result, err
+}
+
+func updateBalances(
+	ctx context.Context,
+	q *Queries,
+	fromID, toID int64,
+	amount int64,
+) (fromAccount, toAccount Account, err error) {
+	// сортировка по ID для предотвращения дедлоков
+	if fromID < toID {
+		fromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			ID:     fromID,
+			Amount: -amount,
+		})
+		if err != nil {
+			return
+		}
+		toAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			ID:     toID,
+			Amount: amount,
+		})
+	} else {
+		toAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			ID:     toID,
+			Amount: amount,
+		})
+		if err != nil {
+			return
+		}
+		fromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			ID:     fromID,
+			Amount: -amount,
+		})
+	}
+	return
 }
