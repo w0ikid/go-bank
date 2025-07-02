@@ -41,7 +41,7 @@ jobs:
         migrate --version
 
     - name: migrate database
-      run: migrate-postgres
+      run: make migrate-postgres
 
     - name: Test
       run: go test -v ./...
