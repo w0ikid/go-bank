@@ -44,4 +44,8 @@ sqlc:
 	@echo "Generating SQLC code..."
 	sqlc generate
 
-.PHONY: createdb dropdb postgres stop-postgres start-postgres restart-postgres remove-postgres migrate-postgres rollback-postgres sqlc
+mock:
+	@echo "Generating mock code..."
+	go generate ./...
+
+.PHONY: createdb dropdb postgres stop-postgres start-postgres restart-postgres remove-postgres migrate-postgres rollback-postgres sqlc mock

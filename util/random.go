@@ -51,6 +51,10 @@ func init() {
 	gofakeit.Seed(time.Now().UnixNano())
 }
 
+func RandomInt(min, max int64) int64 {
+	return int64(gofakeit.Number(int(min), int(max)))
+}
+
 func RandomOwner() string {
 	return gofakeit.Name()
 }

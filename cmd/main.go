@@ -21,7 +21,7 @@ func main() {
 	
 	cfg := pkg.InitConfig(loader, "config.yaml")
 
-
+	
 	// Initialize database connection
 	conn, err := pgxpool.New(context.Background(), cfg.Database.DSN())
 	if err != nil {
@@ -32,9 +32,9 @@ func main() {
 	// Initialize store and server
 
 	store := db.NewStore(conn)
-	server := api.NewServer(*store)
+	server := api.NewServer(store)
 	
-	if err := server.Start(":8080"); err != nil {
+	if err := server.Start(cfg.Server.Address); err != nil {
 		log.Fatal("cannot start server: ", err)
 	}
 }
