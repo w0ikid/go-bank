@@ -1,45 +1,53 @@
+# Подключение переменных окружения
 include .env
+export $(shell sed 's/=.*//' .env)
 
-# POSTGRES_URL := postgres://$(PG_USER):$(PG_PASSWORD)@$(PG_HOST):$(PG_PORT)/$(PG_DB)?sslmode=${PG_SSLMODE}
+# Константы
+POSTGRES_URL := postgres://$(PG_USER):$(PG_PASSWORD)@$(PG_HOST):$(PG_PORT)/$(PG_DATABASE)?sslmode=$(PG_SSLMODE)
+CONTAINER_NAME := postgres17
+POSTGRES_IMAGE := postgres:17.5-alpine3.22
 
+# PostgreSQL контейнер
 postgres:
-	docker run --name postgres17 -p 5433:5432 -e POSTGRES_USER=doniback -e POSTGRES_PASSWORD=secret -d postgres:17.5-alpine3.22
-	@echo "PostgreSQL container 'postgres17' started successfully."
+	docker run --name $(CONTAINER_NAME) -p $(PG_PORT):5432 \
+		-e POSTGRES_USER=$(PG_USER) -e POSTGRES_PASSWORD=$(PG_PASSWORD) \
+		-d $(POSTGRES_IMAGE)
+	@echo "PostgreSQL container '$(CONTAINER_NAME)' started successfully."
 
 stop-postgres:
-	docker stop postgres17
-	@echo "PostgreSQL container 'postgres17' stopped successfully."
+	docker stop $(CONTAINER_NAME)
+	@echo "PostgreSQL container '$(CONTAINER_NAME)' stopped successfully."
 
 start-postgres:
-	docker start postgres17
-	@echo "PostgreSQL container 'postgres17' started successfully."
+	docker start $(CONTAINER_NAME)
+	@echo "PostgreSQL container '$(CONTAINER_NAME)' started successfully."
 
 restart-postgres: stop-postgres start-postgres
-	@echo "PostgreSQL container 'postgres17' restarted successfully."
+	@echo "PostgreSQL container '$(CONTAINER_NAME)' restarted successfully."
 
 remove-postgres:
-	docker rm -f postgres17
-	@echo "PostgreSQL container 'postgres17' removed successfully."	
+	docker rm -f $(CONTAINER_NAME)
+	@echo "PostgreSQL container '$(CONTAINER_NAME)' removed successfully."
 
-
-
-# Database management commands
+# Управление базой данных
 createdb:
-	docker exec -it postgres17 createdb --username=doniback --owner=doniback go_bank
-	@echo "Database 'go_bank' created successfully."
+	docker exec -it $(CONTAINER_NAME) createdb --username=$(PG_USER) --owner=$(PG_USER) $(PG_DATABASE)
+	@echo "Database '$(PG_DATABASE)' created successfully."
 
 dropdb:
-	docker exec -it postgres17 dropdb --username=doniback --if-exists go_bank
-	@echo "Database 'go_bank' dropped successfully."
+	docker exec -it $(CONTAINER_NAME) dropdb --username=$(PG_USER) --if-exists $(PG_DATABASE)
+	@echo "Database '$(PG_DATABASE)' dropped successfully."
 
+# Миграции
 migrate-postgres:
 	@echo "Running PostgreSQL migrations..."
-	migrate -path db/migrations -database "postgres://doniback:secret@localhost:5433/go_bank?sslmode=disable" up
+	migrate -path db/migrations -database "$(POSTGRES_URL)" up
 
 rollback-postgres:
 	@echo "Rolling back PostgreSQL migrations..."
-	migrate -path db/migrations -database "postgres://doniback:secret@localhost:5433/go_bank?sslmode=disable" down 1
+	migrate -path db/migrations -database "$(POSTGRES_URL)" down 1
 
+# Генерация
 sqlc:
 	@echo "Generating SQLC code..."
 	sqlc generate
