@@ -87,7 +87,6 @@ func (l CleanenvLoader) Load(path string, cfg any) error {
 	return cleanenv.ReadConfig(tmpFile.Name(), cfg)
 }
 
-
 // ------ init -------
 
 func InitConfig(loader ConfigLoader, path string) *Config {

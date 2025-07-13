@@ -16,7 +16,6 @@ const (
 var testQueries *Queries
 var testDB *pgxpool.Pool
 
-
 func TestMain(m *testing.M) {
 	var err error
 	testDB, err = pgxpool.New(context.Background(), dbSource)

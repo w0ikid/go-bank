@@ -24,7 +24,7 @@ func NewStore(db *pgxpool.Pool) Store {
 		Queries: New(db),
 		db:      db,
 	}
-} 
+}
 
 func (store *SQLStore) ExecTx(ctx context.Context, fn func(*Queries) error) (err error) {
 	tx, err := store.db.Begin(ctx)
@@ -58,16 +58,16 @@ type TransferTxParams struct {
 }
 
 type TransferTxResult struct {
-	Transfer     Transfer `json:"transfer"`
-	FromAccount  Account  `json:"from_account"`
-	ToAccount    Account  `json:"to_account"`
-	FromEntry    Entry    `json:"from_entry"`
-	ToEntry      Entry    `json:"to_entry"`
+	Transfer    Transfer `json:"transfer"`
+	FromAccount Account  `json:"from_account"`
+	ToAccount   Account  `json:"to_account"`
+	FromEntry   Entry    `json:"from_entry"`
+	ToEntry     Entry    `json:"to_entry"`
 }
 
 func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
-	
+
 	err := store.ExecTx(ctx, func(q *Queries) error {
 		var err error
 		// Create transfer
@@ -79,7 +79,7 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tr
 		if err != nil {
 			return err
 		}
-		
+
 		// Create from entry
 		result.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.FromAccountID,
@@ -97,7 +97,7 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tr
 		if err != nil {
 			return err
 		}
-		
+
 		// Update account balances
 		result.FromAccount, result.ToAccount, err = updateBalances(
 			ctx, q, arg.FromAccountID, arg.ToAccountID, arg.Amount,

@@ -23,7 +23,7 @@ func (server *Server) createAccount(c *gin.Context) {
 	arg := db.CreateAccountParams{
 		Owner:    req.Owner,
 		Currency: req.Currency,
-		Balance: 0,
+		Balance:  0,
 	}
 
 	account, err := server.store.CreateAccount(c, arg)
@@ -37,7 +37,6 @@ func (server *Server) createAccount(c *gin.Context) {
 type getAccountRequest struct {
 	ID int64 `uri:"id" binding:"required,min=1"`
 }
-
 
 func (server *Server) getAccount(c *gin.Context) {
 	var req getAccountRequest
@@ -54,7 +53,7 @@ func (server *Server) getAccount(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-		
+
 	c.JSON(http.StatusOK, account)
 }
 
@@ -80,6 +79,6 @@ func (server *Server) listAccounts(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, accounts)
 }

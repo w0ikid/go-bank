@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log"
 	"context"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
 	"github.com/w0ikid/go-bank/api"
 	db "github.com/w0ikid/go-bank/db/sqlc"
-	"github.com/joho/godotenv"
 	"github.com/w0ikid/go-bank/pkg"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"log"
 )
 
 func main() {
@@ -18,10 +18,9 @@ func main() {
 
 	// Load configuration
 	loader := pkg.CleanenvLoader{}
-	
+
 	cfg := pkg.InitConfig(loader, "config.yaml")
 
-	
 	// Initialize database connection
 	conn, err := pgxpool.New(context.Background(), cfg.Database.DSN())
 	if err != nil {
@@ -33,7 +32,7 @@ func main() {
 
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
-	
+
 	if err := server.Start(cfg.Server.Address); err != nil {
 		log.Fatal("cannot start server: ", err)
 	}

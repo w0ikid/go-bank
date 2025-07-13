@@ -1,10 +1,10 @@
 package util
 
 import (
-	_ "math/rand"
-	"time"
-	_ "strings"
 	"github.com/brianvoe/gofakeit/v7"
+	_ "math/rand"
+	_ "strings"
+	"time"
 )
 
 // const alphabet = "abcdefghijklmnopqrstuvwxyz"
@@ -42,7 +42,6 @@ import (
 // func RandomBalance() int64 {
 // 	return RandomInt(0, 100000)
 // }
-
 
 // -----------------------------------------------
 // using gofakeit for more realistic data generation
