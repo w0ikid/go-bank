@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"log"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"github.com/w0ikid/go-bank/api"
 	db "github.com/w0ikid/go-bank/db/sqlc"
 	"github.com/w0ikid/go-bank/pkg"
-	"log"
 )
 
 func main() {
@@ -27,6 +28,9 @@ func main() {
 		panic("cannot connect to db: " + err.Error())
 	}
 	defer conn.Close()
+	
+	log.Println("Connected to database successfully")
+	log.Printf("Database URL: %s", cfg.Database.DSN())
 
 	// Initialize store and server
 

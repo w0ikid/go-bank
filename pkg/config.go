@@ -46,19 +46,7 @@ func (d DatabaseConfig) DriverName() string {
 }
 
 func (d DatabaseConfig) DSN() string {
-	switch d.Driver {
-	case "sqlite":
-		return d.Path
-	case "postgres":
-		return "host=" + d.Host +
-			" port=" + d.Port +
-			" user=" + d.User +
-			" password=" + d.Password +
-			" dbname=" + d.Name +
-			" sslmode=" + d.SSLMODE
-	default:
-		return ""
-	}
+	return d.Driver + "://" + d.User + ":" + d.Password + "@" + d.Host + ":" + d.Port + "/" + d.Name + "?sslmode=" + d.SSLMODE
 }
 
 // --------- CleanENV ------------

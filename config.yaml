@@ -4,7 +4,7 @@ database:
   port: ${PG_PORT}
   user: ${PG_USER}
   password: ${PG_PASSWORD}
-  name: ${PG_DB}
+  name: ${PG_DATABASE}
   sslmode: ${PG_SSLMODE}
 
 server:
