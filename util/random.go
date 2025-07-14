@@ -59,7 +59,7 @@ func RandomOwner() string {
 }
 
 func RandomCurrency() string {
-	return gofakeit.CurrencyShort()
+	return supportedCurrencies[gofakeit.Number(0, len(supportedCurrencies)-1)]
 }
 
 func RandomBalance() int64 {

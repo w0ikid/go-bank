@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/w0ikid/go-bank/api"
 	db "github.com/w0ikid/go-bank/db/sqlc"
-	"github.com/w0ikid/go-bank/pkg"
+	"github.com/w0ikid/go-bank/util"
 )
 
 func main() {
@@ -18,9 +18,9 @@ func main() {
 	}
 
 	// Load configuration
-	loader := pkg.CleanenvLoader{}
+	loader := util.CleanenvLoader{}
 
-	cfg := pkg.InitConfig(loader, "config.yaml")
+	cfg := util.InitConfig(loader, "config.yaml")
 
 	// Initialize database connection
 	conn, err := pgxpool.New(context.Background(), cfg.Database.DSN())

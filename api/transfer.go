@@ -27,6 +27,37 @@ func (server *Server) createTransfer(c *gin.Context) {
 		Amount:        req.Amount,
 	}
 
+	// Validate accounts exist
+	fromAccount, err := server.store.GetAccount(c, req.FromAccountID)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "from account not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	toAccount, err := server.store.GetAccount(c, req.ToAccountID)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "to account not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	// Create transfer
+	if fromAccount.Currency != toAccount.Currency {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "currency mismatch"})
+		return
+	}
+	if fromAccount.ID == toAccount.ID {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "cannot transfer to the same account"})
+		return
+	}
+	
+
 	transfer, err := server.store.CreateTransfer(c, arg)
 	if err != nil {
 		if err == pgx.ErrNoRows {

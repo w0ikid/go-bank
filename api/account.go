@@ -2,7 +2,7 @@ package api
 
 import (
 	"net/http"
-
+	"github.com/w0ikid/go-bank/util"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
 	db "github.com/w0ikid/go-bank/db/sqlc"
@@ -18,6 +18,11 @@ func (server *Server) createAccount(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
+	}
+
+	// Validate currency
+	if !util.IsValidCurrency(req.Currency) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid currency"})
 	}
 
 	arg := db.CreateAccountParams{
