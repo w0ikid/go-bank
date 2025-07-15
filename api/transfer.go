@@ -9,9 +9,9 @@ import (
 )
 
 type createTransferRequest struct {
-	FromAccountID int64  `json:"from_account_id" binding:"required,min=1"`
-	ToAccountID   int64  `json:"to_account_id" binding:"required,min=1"`
-	Amount        int64  `json:"amount" binding:"required,min=1"`
+	FromAccountID int64 `json:"from_account_id" binding:"required,min=1"`
+	ToAccountID   int64 `json:"to_account_id" binding:"required,min=1"`
+	Amount        int64 `json:"amount" binding:"required,min=1"`
 }
 
 func (server *Server) createTransfer(c *gin.Context) {
@@ -56,7 +56,6 @@ func (server *Server) createTransfer(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "cannot transfer to the same account"})
 		return
 	}
-	
 
 	transfer, err := server.store.CreateTransfer(c, arg)
 	if err != nil {
@@ -69,4 +68,3 @@ func (server *Server) createTransfer(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, transfer)
 }
-

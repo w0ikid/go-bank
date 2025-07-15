@@ -1,10 +1,9 @@
 package util
 
 import (
+	"github.com/ilyakaznacheev/cleanenv"
 	"os"
 	"time"
-
-	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type ConfigLoader interface {
@@ -22,10 +21,7 @@ type Config struct {
 }
 
 type DatabaseConfig struct {
-	Driver string `yaml:"driver"`
-	// sqlite
-	Path string `yaml:"path,omitempty"`
-	// postgres
+	Driver   string `yaml:"driver"`
 	Host     string `yaml:"host,omitempty"`
 	Port     string `yaml:"port,omitempty"`
 	User     string `yaml:"user,omitempty"`

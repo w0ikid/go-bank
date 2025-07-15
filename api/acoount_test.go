@@ -20,10 +20,10 @@ func TestGetAccountAPI(t *testing.T) {
 	account := randomAccount()
 
 	tests := []struct {
-	name          string
-	accountID     int64
-	buildStubs    func(store *mock.MockStore)
-	checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
+		name          string
+		accountID     int64
+		buildStubs    func(store *mock.MockStore)
+		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
 		{
 			name:      "OK",
@@ -79,7 +79,6 @@ func TestGetAccountAPI(t *testing.T) {
 			},
 		},
 	}
-
 
 	for _, tt := range tests {
 		tt := tt // capture range variable

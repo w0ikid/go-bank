@@ -6,25 +6,28 @@ import (
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
+	"github.com/w0ikid/go-bank/util"
+	"log"
 )
 
-const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://doniback:secret@localhost:5433/go_bank?sslmode=disable"
-)
-
-var testQueries *Queries
-var testDB *pgxpool.Pool
+var testStore Store
 
 func TestMain(m *testing.M) {
-	var err error
-	testDB, err = pgxpool.New(context.Background(), dbSource)
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		log.Println(".env не найден или не загружен")
+	}
+
+	cfg := util.InitConfig(util.CleanenvLoader{}, "../../config.yaml")
+
+	conn, err := pgxpool.New(context.Background(), cfg.Database.DSN())
 	if err != nil {
 		panic("cannot connect to db: " + err.Error())
 	}
-	defer testDB.Close()
+	defer conn.Close()
 
-	testQueries = New(testDB)
+	testStore = NewStore(conn)
 
 	os.Exit(m.Run())
 }

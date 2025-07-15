@@ -17,10 +17,7 @@ func main() {
 		log.Println(".env не найден или не загружен")
 	}
 
-	// Load configuration
-	loader := util.CleanenvLoader{}
-
-	cfg := util.InitConfig(loader, "config.yaml")
+	cfg := util.InitConfig(util.CleanenvLoader{}, "config.yaml")
 
 	// Initialize database connection
 	conn, err := pgxpool.New(context.Background(), cfg.Database.DSN())
@@ -28,9 +25,8 @@ func main() {
 		panic("cannot connect to db: " + err.Error())
 	}
 	defer conn.Close()
-	
-	log.Println("Connected to database successfully")
-	log.Printf("Database URL: %s", cfg.Database.DSN())
+
+	log.Println("Connected to database")
 
 	// Initialize store and server
 

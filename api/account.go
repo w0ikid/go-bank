@@ -1,11 +1,12 @@
 package api
 
 import (
-	"net/http"
-	"github.com/w0ikid/go-bank/util"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v5"
 	db "github.com/w0ikid/go-bank/db/sqlc"
+	"github.com/w0ikid/go-bank/util"
+	"net/http"
 )
 
 type createAccountRequest struct {
@@ -23,6 +24,7 @@ func (server *Server) createAccount(c *gin.Context) {
 	// Validate currency
 	if !util.IsValidCurrency(req.Currency) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid currency"})
+		return
 	}
 
 	arg := db.CreateAccountParams{
@@ -33,8 +35,16 @@ func (server *Server) createAccount(c *gin.Context) {
 
 	account, err := server.store.CreateAccount(c, arg)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
+		if pgErr, ok := err.(*pgconn.PgError); ok {
+			switch pgErr.Code {
+			case "23505": // Unique violation
+				c.JSON(http.StatusConflict, gin.H{"error": "account already exists"})
+				return
+			case "23503": // Foreign key violation
+				c.JSON(http.StatusBadRequest, gin.H{"error": "owner does not exist"})
+				return
+			}
+		}
 	}
 	c.JSON(http.StatusOK, account)
 }

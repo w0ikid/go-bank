@@ -65,3 +65,7 @@ func RandomCurrency() string {
 func RandomBalance() int64 {
 	return int64(gofakeit.Number(1, 1000000))
 }
+
+func RandomEmail() string {
+	return gofakeit.Email()
+}

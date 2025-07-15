@@ -3,14 +3,14 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	"strings"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	"github.com/w0ikid/go-bank/db/mock"
 	db "github.com/w0ikid/go-bank/db/sqlc"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
 )
 
 func TestCreateTransferAPI(t *testing.T) {
@@ -24,7 +24,7 @@ func TestCreateTransferAPI(t *testing.T) {
 		toAccountID   int64
 		buildStubs    func(store *mock.MockStore)
 		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
-	} {
+	}{
 		{
 			name:          "OK",
 			amount:        100,
