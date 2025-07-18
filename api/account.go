@@ -45,6 +45,8 @@ func (server *Server) createAccount(c *gin.Context) {
 				return
 			}
 		}
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
 	}
 	c.JSON(http.StatusOK, account)
 }

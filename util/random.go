@@ -69,3 +69,7 @@ func RandomBalance() int64 {
 func RandomEmail() string {
 	return gofakeit.Email()
 }
+
+func RandomString(n int) string {
+	return gofakeit.LetterN(uint(n))
+}
